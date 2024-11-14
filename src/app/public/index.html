@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoInsight</title>
+    <link rel="icon" href="../components/images/QuintanIcon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href = "styles.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="data.js"></script>
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="btn" onclick="toggleSidebar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <img src="../components/images/QuintanIcon.png" alt="Icon" height="30">
+            <div class="dropdown ms-auto">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="datasetDropdown" data-bs-toggle="dropdown">
+                    Sunshine Coast Council
+                </button>
+                <ul class="dropdown-menu" id="datasetList"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <button class="btn-close float-end" onclick="toggleSidebar()"></button>
+        <h5>Question History</h5>
+        <ul class="list-group" id="questionHistory"></ul>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="response-area" id="responseArea"></div>
+        
+        <div class="question-dropdown dropup">
+            <button class="btn btn-light dropdown-toggle w-100" type="button" id="questionDropdown" data-bs-toggle="dropdown">
+                Questions
+            </button>
+            <ul class="dropdown-menu w-100" id="questionList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let currentDataset = "Sunshine Coast Council";
+        
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("mainContent").classList.toggle("active");
+        }
+
+        function populateDatasetDropdown() {
+            const datasetList = document.getElementById("datasetList");
+            for (let dataset in data) {
+                const item = document.createElement("li");
+                const link = document.createElement("a");
+                link.className = "dropdown-item";
+                link.href = "#";
+                link.textContent = dataset;
+                link.onclick = () => selectDataset(dataset);
+                item.appendChild(link);
+                datasetList.appendChild(item);
+            }
+        }
+
+        function selectDataset(dataset) {
+            currentDataset = dataset;
+            document.getElementById("datasetDropdown").textContent = dataset;
+            populateQuestionDropdown();
+        }
+
+        function populateQuestionDropdown() {
+            const questionList = document.getElementById("questionList");
+            questionList.innerHTML = "";
+            data[currentDataset].Questions.forEach((question, index) => {
+                const item = document.createElement("li");
+                const link = document.createElement("a");
+                link.className = "dropdown-item";
+                link.href = "#";
+                link.textContent = question;
+                link.onclick = () => displayQA(index);
+                item.appendChild(link);
+                questionList.appendChild(item);
+            });
+        }
+
+        function displayQA(index) {
+            const question = data[currentDataset].Questions[index];
+            const answer = data[currentDataset].Answers[index];
+            
+            const responseArea = document.getElementById("responseArea");
+            const questionDiv = document.createElement("div");
+            questionDiv.className = "question-bubble";
+            questionDiv.textContent = question;
+            
+            const answerDiv = document.createElement("div");
+            answerDiv.className = "answer-text";
+            answerDiv.innerHTML = answer;
+            
+            responseArea.appendChild(questionDiv);
+            responseArea.appendChild(answerDiv);
+            
+            addToHistory(question);
+        }
+
+        function addToHistory(question) {
+            const history = document.getElementById("questionHistory");
+            const item = document.createElement("li");
+            item.className = "list-group-item";
+            item.textContent = question;
+            history.appendChild(item);
+        }
+
+        window.onload = function() {
+            populateDatasetDropdown();
+            populateQuestionDropdown();
+        }
+    </script>
+</body>
+</html>
