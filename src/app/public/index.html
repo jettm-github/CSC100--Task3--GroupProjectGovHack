@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,15 +46,21 @@
 
     <script>
         let currentDataset = "Sunshine Coast Council";
-        
+        console.log("Initial dataset set to:", currentDataset);
+
         function toggleSidebar() {
+            console.log("Toggling sidebar visibility");
             document.getElementById("sidebar").classList.toggle("active");
             document.getElementById("mainContent").classList.toggle("active");
+            console.log("Sidebar state:", document.getElementById("sidebar").classList.contains("active") ? "Visible" : "Hidden");
         }
 
         function populateDatasetDropdown() {
+            console.log("Populating dataset dropdown");
             const datasetList = document.getElementById("datasetList");
+            datasetList.innerHTML = ""; // Clear existing items
             for (let dataset in data) {
+                console.log("Adding dataset to dropdown:", dataset);
                 const item = document.createElement("li");
                 const link = document.createElement("a");
                 link.className = "dropdown-item";
@@ -65,18 +70,23 @@
                 item.appendChild(link);
                 datasetList.appendChild(item);
             }
+            console.log("Dataset dropdown populated successfully");
         }
 
         function selectDataset(dataset) {
+            console.log("Dataset selected:", dataset);
             currentDataset = dataset;
             document.getElementById("datasetDropdown").textContent = dataset;
+            console.log("Dataset dropdown label updated to:", dataset);
             populateQuestionDropdown();
         }
 
         function populateQuestionDropdown() {
+            console.log("Populating question dropdown for dataset:", currentDataset);
             const questionList = document.getElementById("questionList");
-            questionList.innerHTML = "";
+            questionList.innerHTML = ""; // Clear previous questions
             data[currentDataset].Questions.forEach((question, index) => {
+                console.log(`Adding question to dropdown [${index}]:`, question);
                 const item = document.createElement("li");
                 const link = document.createElement("a");
                 link.className = "dropdown-item";
@@ -86,38 +96,48 @@
                 item.appendChild(link);
                 questionList.appendChild(item);
             });
+            console.log("Question dropdown populated successfully");
         }
 
         function displayQA(index) {
+            console.log(`Displaying question and answer for index [${index}] in dataset:`, currentDataset);
             const question = data[currentDataset].Questions[index];
             const answer = data[currentDataset].Answers[index];
-            
+            console.log("Selected question:", question);
+            console.log("Associated answer:", answer);
+
             const responseArea = document.getElementById("responseArea");
+            responseArea.innerHTML = ""; // Clear previous responses
+
             const questionDiv = document.createElement("div");
             questionDiv.className = "question-bubble";
             questionDiv.textContent = question;
-            
+
             const answerDiv = document.createElement("div");
             answerDiv.className = "answer-text";
             answerDiv.innerHTML = answer;
-            
+
             responseArea.appendChild(questionDiv);
             responseArea.appendChild(answerDiv);
-            
+
             addToHistory(question);
         }
 
         function addToHistory(question) {
+            console.log("Adding question to history:", question);
             const history = document.getElementById("questionHistory");
             const item = document.createElement("li");
             item.className = "list-group-item";
             item.textContent = question;
             history.appendChild(item);
+            console.log("Question added to history successfully");
         }
 
         window.onload = function() {
+            console.log("Window loaded, initialising dropdowns");
             populateDatasetDropdown();
             populateQuestionDropdown();
+            console.log("Dropdowns initialised");
         }
     </script>
 </body>
